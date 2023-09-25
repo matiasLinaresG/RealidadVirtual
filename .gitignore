@@ -207,7 +207,8 @@ celerybeat.pid
 .env
 .venv
 env/
-venv/
+balldetection/venv/
+balldetection/.idea
 ENV/
 env.bak/
 venv.bak/
