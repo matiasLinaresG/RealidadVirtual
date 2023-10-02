@@ -1,46 +1,95 @@
-using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
+using System.Threading;
 
 public class BallDetection : MonoBehaviour
 {
-    public string serverAddress = "127.0.0.1";
-    public int serverPort = 8080;
+    Thread thread;
+    public int connectionPort = 8080;
+    TcpListener server;
+    TcpClient client;
+    bool running;
+    public GameObject MainCamera;
 
-    private TcpClient client;
-    private NetworkStream stream;
-    private byte[] receiveBuffer = new byte[1024];
 
-    private void Start()
+    void Start()
     {
-        ConnectToServer();
+        // Receive on a separate thread so Unity doesn't freeze waiting for data
+        ThreadStart ts = new ThreadStart(GetData);
+        thread = new Thread(ts);
+        thread.Start();
     }
 
-    private void ConnectToServer()
+    void GetData()
     {
-        try
-        {
-            client = new TcpClient(serverAddress, serverPort);
-            stream = client.GetStream();
-            Debug.Log("Connected to server.");
+        // Create the server
+        server = new TcpListener(IPAddress.Any, connectionPort);
+        server.Start();
 
-            // Receive data from the server
-            int bytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
-            string receivedData = Encoding.UTF8.GetString(receiveBuffer, 0, bytesRead);
-            Debug.Log("Received from server: " + receivedData);
-        }
-        catch (Exception e)
+        // Create a client to get the data stream
+        client = server.AcceptTcpClient();
+
+        // Start listening
+        running = true;
+        while (running)
         {
-            Debug.LogError("Error connecting to server: " + e.Message);
+            Connection();
+        }
+        server.Stop();
+    }
+
+    void Connection()
+    {
+        // Read data from the network stream
+        NetworkStream nwStream = client.GetStream();
+        byte[] buffer = new byte[client.ReceiveBufferSize];
+        int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
+
+        // Decode the bytes into a string
+        string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+        
+        // Make sure we're not getting an empty string
+        //dataReceived.Trim();
+        if (dataReceived != null && dataReceived != "")
+        {
+            // Convert the received string of data to the format we are using
+            position = ParseData(dataReceived);
+            nwStream.Write(buffer, 0, bytesRead);
         }
     }
 
-    private void OnDestroy()
+    // Use-case specific function, need to re-write this to interpret whatever data is being sent
+    public static Vector3 ParseData(string dataString)
     {
-        if (client != null)
+        Debug.Log(dataString);
+        // Remove the parentheses
+        if (dataString.StartsWith("(") && dataString.EndsWith(")"))
         {
-            client.Close();
+            dataString = dataString.Substring(1, dataString.Length - 2);
         }
+
+        // Split the elements into an array
+        string[] stringArray = dataString.Split(',');
+
+        // Store as a Vector3
+        Vector3 result = new Vector3(
+            float.Parse(stringArray[0]),
+            float.Parse(stringArray[1]),
+            float.Parse(stringArray[2]));
+
+            
+
+        return result;
+    }
+
+    // Position is the data being received in this example
+    Vector3 position = Vector3.zero;
+
+    void Update()
+    {
+        // Set this object's position in the scene according to the position received
+        transform.position = position;
     }
 }
