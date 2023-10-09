@@ -5,20 +5,20 @@
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
-WeldingSimulator/[Ll]ibrary/
-WeldingSimulator/[Tt]emp/
-WeldingSimulator/[Oo]bj/
-WeldingSimulator/[Bb]uild/
-WeldingSimulator/[Bb]uilds/
-WeldingSimulator/[Ll]ogs/
-WeldingSimulator/[Uu]ser[Ss]ettings/
+PoliceSimulator/[Ll]ibrary/
+PoliceSimulator/[Tt]emp/
+PoliceSimulator/[Oo]bj/
+PoliceSimulator/[Bb]uild/
+PoliceSimulator/[Bb]uilds/
+PoliceSimulator/[Ll]ogs/
+PoliceSimulator/[Uu]ser[Ss]ettings/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
-WeldingSimulator/[Mm]emoryCaptures/
+PoliceSimulator/[Mm]emoryCaptures/
 
 # Recordings can get excessive in size
-WeldingSimulator/[Rr]ecordings/
+PoliceSimulator/[Rr]ecordings/
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
@@ -68,11 +68,11 @@ sysinfo.txt
 crashlytics-build.properties
 
 # Packed Addressables
-WeldingSimulator/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+PoliceSimulator/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
 # Temporary auto-generated Android Assets
-WeldingSimulator/[Aa]ssets/[Ss]treamingAssets/aa.meta
-WeldingSimulator/[Aa]ssets/[Ss]treamingAssets/aa/*
+PoliceSimulator/[Aa]ssets/[Ss]treamingAssets/aa.meta
+PoliceSimulator/[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
 

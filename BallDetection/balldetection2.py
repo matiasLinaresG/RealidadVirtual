@@ -48,13 +48,19 @@ def ball_detection(vs, lower, upper, show):
 	# color space
 	# frame = imutils.resize(frame, width=600)
 	blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+	if show:
+		cv2.imshow("yellowball blur", blurred)
 	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 	# construct a mask for the color "green", then perform
 	# a series of dilations and erosions to remove any small
 	# blobs left in the mask
 	mask = cv2.inRange(hsv, lower, upper)
 	mask = cv2.erode(mask, None, iterations=2)
+	if show:
+		cv2.imshow("yellowball erode", mask)
 	mask = cv2.dilate(mask, None, iterations=2)
+	if show:
+		cv2.imshow("yellowball dilate", mask)
 	# find contours in the mask and initialize the current
 	# (x, y) center of the ball
 	cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -70,20 +76,22 @@ def ball_detection(vs, lower, upper, show):
 		M = cv2.moments(c)
 		center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 		# only proceed if the radius meets a minimum size
-		if radius > 10:
+		#if radius > 10:
 			# draw the circle and centroid on the frame,\
 			# then update the list of tracked points
-			cv2.circle(frame, (int(x), int(y)), int(radius),(0, 255, 255), 2)
-			cv2.circle(frame, center, 5, (0, 0, 255), -1)
+			#cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
+			#cv2.circle(frame, center, 5, (0, 0, 255), -1)
 
-		real_radius = 50  # mm
-		focal_length = 545  # radius(pixels) * 50cm / 5cm (test at 50cm distance with 2.5cm radius ball)
+		real_radius = 5  # cm
+		fx = 941.6
+		fy = 937.9
+		cx = 697.9
+		cy = 380.9
 
-		dist = round((real_radius * focal_length)/radius)
+		zc = round(fx * real_radius / radius)
+		xc = round((x-cx)*zc/fx)
 
-		# theta = 2*math.atan(real_size/(2*focal_length))
-		# dist = round(real_size / (2*math.tan(theta/2)))
-		return center[0], center[1], dist
+		return xc, yc, zc
 	else:
 		return 0, 0, 0
 
@@ -108,4 +116,5 @@ def run():
 	print("Program ended by user")
 
 
-#run()
+
+run()
