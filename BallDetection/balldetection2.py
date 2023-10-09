@@ -90,6 +90,7 @@ def ball_detection(vs, lower, upper, show):
 
 		zc = round(fx * real_radius / radius)
 		xc = round((x-cx)*zc/fx)
+		yc = round((y-cy)*zc/fy)
 
 		return xc, yc, zc
 	else:
